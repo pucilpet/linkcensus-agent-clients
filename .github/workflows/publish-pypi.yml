@@ -1,0 +1,309 @@
+name: Publish reviewed LinkCensus 0.1.0 artifacts
+on:
+  workflow_dispatch:
+permissions: {}
+concurrency:
+  group: linkcensus-pypi-0.1.0
+  cancel-in-progress: false
+jobs:
+  publish-client:
+    if: github.repository == 'pucilpet/linkcensus-agent-clients' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment: pypi-client
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Fetch and verify reviewed assets for linkcensus-client
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_HOST: github.com
+          GH_PROMPT_DISABLED: '1'
+        run: |
+          set -euo pipefail
+          python3 - <<'PYTHON'
+          """Candidate trusted workflow payload; no execution of downloaded package code."""
+          from email.parser import BytesParser
+          import hashlib
+          import io
+          import json
+          from pathlib import Path
+          import subprocess
+          import shutil
+          import tarfile
+          import zipfile
+
+          REPOSITORY = 'pucilpet/linkcensus-agent-clients'
+          SOURCE_COMMIT = '64fe2bc5a7924ecb5619f5971d80cb93583de442'
+          RELEASE_TAG = 'v0.1.0'
+          RELEASE_ID = 415939578
+          ARTIFACTS = {
+              'linkcensus_client-0.1.0-py3-none-any.whl': {'sha256': '0cbad526b2f45b679617c5bdad77cab3b45bc48ec9bb03e634a9078718c1c221', 'bytes': 13723},
+              'linkcensus_client-0.1.0.tar.gz': {'sha256': 'a9fa62f56fba4d611075b816616b94d2e9f5a7e4d154f4714f3026e828d511bf', 'bytes': 19922},
+              'linkcensus_mcp-0.1.0-py3-none-any.whl': {'sha256': '352827253bc967db69432d572f4e6a2225799e4556360f7fe1642d2c2eee372f', 'bytes': 16163},
+              'linkcensus_mcp-0.1.0.tar.gz': {'sha256': '76b6a8dd6e5ab1c5f5f245500134501fd4c5efb996eb686b1d6795f67c55ea77', 'bytes': 25019},
+          }
+
+
+          def require(condition, reason):
+              if not condition:
+                  raise ValueError(reason)
+
+
+          def api(path, projection=None):
+              command = ['gh', 'api', '--method', 'GET', 'repos/' + REPOSITORY + '/' + path]
+              if projection:
+                  command += ['--jq', projection]
+              result = subprocess.run(command, check=True, capture_output=True, timeout=20)
+              require(len(result.stdout) <= 1024 * 1024, 'GitHub metadata cap exceeded')
+              return json.loads(result.stdout)
+
+
+          def validate_payloads(directory):
+              require({p.name for p in directory.iterdir()} == set(ARTIFACTS), 'Artifact set mismatch')
+              for name, expected in ARTIFACTS.items():
+                  path = directory / name
+                  require(path.is_file() and not path.is_symlink(), 'Artifact must be regular file')
+                  require(path.stat().st_size == expected['bytes'], 'Artifact byte size mismatch')
+                  raw = path.read_bytes()
+                  require(hashlib.sha256(raw).hexdigest() == expected['sha256'], 'Artifact SHA256 mismatch')
+                  if name.endswith('.whl'):
+                      with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+                          members = archive.infolist()
+                          require(len(members) <= 1000 and sum(x.file_size for x in members) <= 16 * 1024 * 1024, 'Wheel bounds exceeded')
+                          metadata_paths = [x for x in members if x.filename.endswith('.dist-info/METADATA')]
+                          require(len(metadata_paths) == 1, 'Wheel metadata ambiguity')
+                          metadata = archive.read(metadata_paths[0])
+                  else:
+                      metadata = None
+                      count = total = 0
+                      with tarfile.open(fileobj=io.BytesIO(raw), mode='r|gz') as archive:
+                          for member in archive:
+                              count += 1
+                              total += member.size
+                              require(count <= 1000 and total <= 16 * 1024 * 1024, 'Sdist bounds exceeded')
+                              if len(member.name.split('/')) == 2 and member.name.endswith('/PKG-INFO'):
+                                  require(metadata is None and member.isfile(), 'Sdist metadata ambiguity')
+                                  metadata = archive.extractfile(member).read()
+                      require(metadata is not None, 'Sdist metadata missing')
+                  message = BytesParser().parsebytes(metadata)
+                  project = 'linkcensus-client' if name.startswith('linkcensus_client-') else 'linkcensus-mcp'
+                  require(message['Name'] == project and message['Version'] == '0.1.0', 'Package identity mismatch')
+                  require(message['Requires-Python'] == '>=3.10', 'Python metadata mismatch')
+                  require('Source, https://github.com/' + REPOSITORY in message.get_all('Project-URL', []), 'Source URL mismatch')
+                  require(message['Description-Content-Type'] == 'text/markdown', 'README content type mismatch')
+                  if project == 'linkcensus-mcp':
+                      require(b'<!-- mcp-name: io.github.pucilpet/linkcensus-mcp -->' in metadata, 'MCP marker missing')
+              return {'source_commit': SOURCE_COMMIT, 'release_tag': RELEASE_TAG, 'artifacts': ARTIFACTS, 'status': 'passed'}
+
+
+          def isolate_package(directory, package):
+              require(package in ('linkcensus-client', 'linkcensus-mcp'), 'Unknown publisher package')
+              receipt = validate_payloads(directory)
+              prefix = package.replace('-', '_') + '-'
+              selected = {name: values for name, values in ARTIFACTS.items() if name.startswith(prefix)}
+              require(len(selected) == 2, 'Publisher artifact scope mismatch')
+              destination = Path('verified-dist-' + package.removeprefix('linkcensus-'))
+              destination.mkdir(mode=0o700)
+              for name in selected:
+                  shutil.copyfile(directory / name, destination / name)
+                  require(hashlib.sha256((destination / name).read_bytes()).hexdigest() == selected[name]['sha256'], 'Isolated artifact hash mismatch')
+              require({path.name for path in destination.iterdir()} == set(selected), 'Publisher directory isolation failure')
+              receipt['validated_artifacts'] = receipt.pop('artifacts')
+              receipt['publish_artifacts'] = selected
+              receipt['package'] = package
+              receipt['release_id'] = RELEASE_ID
+              receipt['packages_directory'] = str(destination)
+              return receipt
+
+
+          def main(package='linkcensus-client'):
+              reference = api('git/ref/tags/' + RELEASE_TAG)['object']
+              for _ in range(4):
+                  if reference['type'] == 'commit':
+                      break
+                  require(reference['type'] == 'tag', 'Unexpected tag object')
+                  reference = api('git/tags/' + reference['sha'])['object']
+              require(reference['type'] == 'commit' and reference['sha'] == SOURCE_COMMIT, 'Release tag source mismatch')
+              release = api('releases/' + str(RELEASE_ID), '{id,tag_name,target_commitish,draft,assets:[.assets[]|{name,size,state,digest}]}')
+              require(release['id'] == RELEASE_ID and release['tag_name'] == RELEASE_TAG and release['target_commitish'] == SOURCE_COMMIT, 'Release metadata mismatch')
+              require(len(release['assets']) == 4 and {a['name'] for a in release['assets']} == set(ARTIFACTS), 'Release asset set mismatch')
+              for asset in release['assets']:
+                  expected = ARTIFACTS[asset['name']]
+                  require(asset['state'] == 'uploaded' and asset['size'] == expected['bytes'], 'Release asset incomplete or size mismatch')
+                  if asset.get('digest') is not None:
+                      require(asset['digest'] == 'sha256:' + expected['sha256'], 'Release asset digest mismatch')
+              directory = Path('verified-all')
+              directory.mkdir(mode=0o700)
+              for name in ARTIFACTS:
+                  subprocess.run(['gh', 'release', 'download', RELEASE_TAG, '--repo', REPOSITORY,
+                                  '--pattern', name, '--dir', str(directory)], check=True, timeout=30)
+              receipt = isolate_package(directory, package)
+              Path('publish-input-receipt-' + package + '.json').write_text(json.dumps(receipt, indent=2) + '\n')
+              print(json.dumps(receipt, sort_keys=True))
+
+
+          if __name__ == '__main__':
+              main('linkcensus-client')
+          PYTHON
+      - name: Publish only linkcensus-client through PyPI OIDC
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
+        with:
+          packages-dir: verified-dist-client/
+          verify-metadata: 'true'
+          skip-existing: 'false'
+          print-hash: 'true'
+          attestations: 'false'
+  publish-mcp:
+    needs: publish-client
+    if: github.repository == 'pucilpet/linkcensus-agent-clients' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment: pypi-mcp
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Fetch and verify reviewed assets for linkcensus-mcp
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_HOST: github.com
+          GH_PROMPT_DISABLED: '1'
+        run: |
+          set -euo pipefail
+          python3 - <<'PYTHON'
+          """Candidate trusted workflow payload; no execution of downloaded package code."""
+          from email.parser import BytesParser
+          import hashlib
+          import io
+          import json
+          from pathlib import Path
+          import subprocess
+          import shutil
+          import tarfile
+          import zipfile
+
+          REPOSITORY = 'pucilpet/linkcensus-agent-clients'
+          SOURCE_COMMIT = '64fe2bc5a7924ecb5619f5971d80cb93583de442'
+          RELEASE_TAG = 'v0.1.0'
+          RELEASE_ID = 415939578
+          ARTIFACTS = {
+              'linkcensus_client-0.1.0-py3-none-any.whl': {'sha256': '0cbad526b2f45b679617c5bdad77cab3b45bc48ec9bb03e634a9078718c1c221', 'bytes': 13723},
+              'linkcensus_client-0.1.0.tar.gz': {'sha256': 'a9fa62f56fba4d611075b816616b94d2e9f5a7e4d154f4714f3026e828d511bf', 'bytes': 19922},
+              'linkcensus_mcp-0.1.0-py3-none-any.whl': {'sha256': '352827253bc967db69432d572f4e6a2225799e4556360f7fe1642d2c2eee372f', 'bytes': 16163},
+              'linkcensus_mcp-0.1.0.tar.gz': {'sha256': '76b6a8dd6e5ab1c5f5f245500134501fd4c5efb996eb686b1d6795f67c55ea77', 'bytes': 25019},
+          }
+
+
+          def require(condition, reason):
+              if not condition:
+                  raise ValueError(reason)
+
+
+          def api(path, projection=None):
+              command = ['gh', 'api', '--method', 'GET', 'repos/' + REPOSITORY + '/' + path]
+              if projection:
+                  command += ['--jq', projection]
+              result = subprocess.run(command, check=True, capture_output=True, timeout=20)
+              require(len(result.stdout) <= 1024 * 1024, 'GitHub metadata cap exceeded')
+              return json.loads(result.stdout)
+
+
+          def validate_payloads(directory):
+              require({p.name for p in directory.iterdir()} == set(ARTIFACTS), 'Artifact set mismatch')
+              for name, expected in ARTIFACTS.items():
+                  path = directory / name
+                  require(path.is_file() and not path.is_symlink(), 'Artifact must be regular file')
+                  require(path.stat().st_size == expected['bytes'], 'Artifact byte size mismatch')
+                  raw = path.read_bytes()
+                  require(hashlib.sha256(raw).hexdigest() == expected['sha256'], 'Artifact SHA256 mismatch')
+                  if name.endswith('.whl'):
+                      with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+                          members = archive.infolist()
+                          require(len(members) <= 1000 and sum(x.file_size for x in members) <= 16 * 1024 * 1024, 'Wheel bounds exceeded')
+                          metadata_paths = [x for x in members if x.filename.endswith('.dist-info/METADATA')]
+                          require(len(metadata_paths) == 1, 'Wheel metadata ambiguity')
+                          metadata = archive.read(metadata_paths[0])
+                  else:
+                      metadata = None
+                      count = total = 0
+                      with tarfile.open(fileobj=io.BytesIO(raw), mode='r|gz') as archive:
+                          for member in archive:
+                              count += 1
+                              total += member.size
+                              require(count <= 1000 and total <= 16 * 1024 * 1024, 'Sdist bounds exceeded')
+                              if len(member.name.split('/')) == 2 and member.name.endswith('/PKG-INFO'):
+                                  require(metadata is None and member.isfile(), 'Sdist metadata ambiguity')
+                                  metadata = archive.extractfile(member).read()
+                      require(metadata is not None, 'Sdist metadata missing')
+                  message = BytesParser().parsebytes(metadata)
+                  project = 'linkcensus-client' if name.startswith('linkcensus_client-') else 'linkcensus-mcp'
+                  require(message['Name'] == project and message['Version'] == '0.1.0', 'Package identity mismatch')
+                  require(message['Requires-Python'] == '>=3.10', 'Python metadata mismatch')
+                  require('Source, https://github.com/' + REPOSITORY in message.get_all('Project-URL', []), 'Source URL mismatch')
+                  require(message['Description-Content-Type'] == 'text/markdown', 'README content type mismatch')
+                  if project == 'linkcensus-mcp':
+                      require(b'<!-- mcp-name: io.github.pucilpet/linkcensus-mcp -->' in metadata, 'MCP marker missing')
+              return {'source_commit': SOURCE_COMMIT, 'release_tag': RELEASE_TAG, 'artifacts': ARTIFACTS, 'status': 'passed'}
+
+
+          def isolate_package(directory, package):
+              require(package in ('linkcensus-client', 'linkcensus-mcp'), 'Unknown publisher package')
+              receipt = validate_payloads(directory)
+              prefix = package.replace('-', '_') + '-'
+              selected = {name: values for name, values in ARTIFACTS.items() if name.startswith(prefix)}
+              require(len(selected) == 2, 'Publisher artifact scope mismatch')
+              destination = Path('verified-dist-' + package.removeprefix('linkcensus-'))
+              destination.mkdir(mode=0o700)
+              for name in selected:
+                  shutil.copyfile(directory / name, destination / name)
+                  require(hashlib.sha256((destination / name).read_bytes()).hexdigest() == selected[name]['sha256'], 'Isolated artifact hash mismatch')
+              require({path.name for path in destination.iterdir()} == set(selected), 'Publisher directory isolation failure')
+              receipt['validated_artifacts'] = receipt.pop('artifacts')
+              receipt['publish_artifacts'] = selected
+              receipt['package'] = package
+              receipt['release_id'] = RELEASE_ID
+              receipt['packages_directory'] = str(destination)
+              return receipt
+
+
+          def main(package='linkcensus-client'):
+              reference = api('git/ref/tags/' + RELEASE_TAG)['object']
+              for _ in range(4):
+                  if reference['type'] == 'commit':
+                      break
+                  require(reference['type'] == 'tag', 'Unexpected tag object')
+                  reference = api('git/tags/' + reference['sha'])['object']
+              require(reference['type'] == 'commit' and reference['sha'] == SOURCE_COMMIT, 'Release tag source mismatch')
+              release = api('releases/' + str(RELEASE_ID), '{id,tag_name,target_commitish,draft,assets:[.assets[]|{name,size,state,digest}]}')
+              require(release['id'] == RELEASE_ID and release['tag_name'] == RELEASE_TAG and release['target_commitish'] == SOURCE_COMMIT, 'Release metadata mismatch')
+              require(len(release['assets']) == 4 and {a['name'] for a in release['assets']} == set(ARTIFACTS), 'Release asset set mismatch')
+              for asset in release['assets']:
+                  expected = ARTIFACTS[asset['name']]
+                  require(asset['state'] == 'uploaded' and asset['size'] == expected['bytes'], 'Release asset incomplete or size mismatch')
+                  if asset.get('digest') is not None:
+                      require(asset['digest'] == 'sha256:' + expected['sha256'], 'Release asset digest mismatch')
+              directory = Path('verified-all')
+              directory.mkdir(mode=0o700)
+              for name in ARTIFACTS:
+                  subprocess.run(['gh', 'release', 'download', RELEASE_TAG, '--repo', REPOSITORY,
+                                  '--pattern', name, '--dir', str(directory)], check=True, timeout=30)
+              receipt = isolate_package(directory, package)
+              Path('publish-input-receipt-' + package + '.json').write_text(json.dumps(receipt, indent=2) + '\n')
+              print(json.dumps(receipt, sort_keys=True))
+
+
+          if __name__ == '__main__':
+              main('linkcensus-mcp')
+          PYTHON
+      - name: Publish only linkcensus-mcp through PyPI OIDC
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
+        with:
+          packages-dir: verified-dist-mcp/
+          verify-metadata: 'true'
+          skip-existing: 'false'
+          print-hash: 'true'
+          attestations: 'false'

@@ -14,14 +14,19 @@
   "self_hash": "recorded separately in private review receipt",
   "files": [
     {
+      "path": ".github/workflows/publish-pypi.yml",
+      "bytes": 17855,
+      "sha256": "1186e9b75abab6c14fcc7c88345211384f35ee55b0fc87be04d3235c8005cee6"
+    },
+    {
       "path": ".gitignore",
       "bytes": 80,
       "sha256": "76449999c8045614db6a8a2b72601f0bc292529d2e106e896923bbaa748916c9"
     },
     {
       "path": "EXPORT_ALLOWLIST.json",
-      "bytes": 1834,
-      "sha256": "ce0c4a9c861d1acd906c95b9df980961f983dcbea3202c4ed0ea6f6acbd15655"
+      "bytes": 1876,
+      "sha256": "4cc781e7afd7f739fe8482e334009df51952a05841c59e80596c81ab54994029"
     },
     {
       "path": "LICENSE",

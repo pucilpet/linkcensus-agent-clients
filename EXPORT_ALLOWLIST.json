@@ -1,6 +1,7 @@
 {
   "schema_version": 1,
   "allowed_paths": [
+    ".github/workflows/publish-pypi.yml",
     ".gitignore",
     "EXPORT_ALLOWLIST.json",
     "EXPORT_MANIFEST.json",
