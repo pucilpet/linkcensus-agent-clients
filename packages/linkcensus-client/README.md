@@ -2,8 +2,9 @@
 
 Version 0.1.0 is a standalone Python 3.10+ client and CLI for the versioned
 LinkCensus neighborhood API. Runtime dependencies: Python standard library only.
-The distribution uses setuptools at build time. This package is unpublished;
-installation, production availability and MCP compatibility have not been proved.
+The distribution uses setuptools at build time. Development artifacts passed local
+installed CLI and official-SDK MCP fixture checks. Final distribution artifacts,
+public-index installation and live API availability remain pending.
 
 The endpoint requires an existing LinkCensus API key with `neighborhoods:read`.
 It returns candidates from a dated retained link-neighborhood set. Relatedness
@@ -117,8 +118,10 @@ deadline for DNS or a server sending a slow trickle. The response read is capped
 at 512 KiB plus one sentinel byte, with no decompression. HTTPS uses standard
 certificate validation. Environment proxy settings are ignored; redirects and
 cookies are disabled. Linux private-file behavior is tested; other platforms
-and Python minor versions need separate acceptance. Clean-install/package-build
-smoke, real hosted readback and two MCP-client integrations remain later gates.
+and Python minor versions need separate acceptance. Final-public-commit artifact and clean-install
+smoke, real hosted readback and two end-user MCP-client integrations remain later
+gates. Earlier development wheels were locally built and installed, and the CLI
+was exercised against synthetic REST fixtures; that is not a public-index release.
 
 | Platform | Python | Evidence |
 | --- | --- | --- |

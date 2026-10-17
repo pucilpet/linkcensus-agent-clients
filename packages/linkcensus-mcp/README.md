@@ -6,7 +6,7 @@ Separate local gateway over `linkcensus-client==0.1.0`, using the official Pytho
 SDK `mcp==2.3.0`. Python >=3.10, POSIX pipes on Linux/macOS, and asyncio are
 supported by this source. Windows is not supported. Keep SDK dependencies in a
 separate environment; do not upgrade LinkCensus backend dependencies to install
-this gateway. See [PROVENANCE.md](PROVENANCE.md) for the MIT-licensed VP transport
+this gateway. See [PROVENANCE.md](https://github.com/pucilpet/linkcensus-agent-clients/blob/631d764cc9e2bf8ec3d862938847d4ae7f357797/packages/linkcensus-mcp/PROVENANCE.md) for the MIT-licensed VP transport
 and runner adaptation and retained copyright attribution.
 
 This is a local stdio implementation. Hosted Streamable HTTP, interactive
@@ -16,10 +16,12 @@ interactive remote MCP authorization.
 
 ## Installation and credentials
 
-After resource admission and review, the coordinator may build/copy reviewed
-wheels and install the client/gateway with the pinned SDK into an isolated
-environment. This worker performed no installation/build. Focused tests used the
-already installed coordinator SDK environment.
+Development wheels were built and installed outside the checkout in a separate
+reviewed SDK environment. An installed CLI and official-SDK subprocess session
+then exercised synthetic REST fixtures, shared quota and revocation. That local
+acceptance predates the final public distribution metadata. Final-commit
+wheel/sdist validation, fresh artifact/public-index installation, package
+publication and Registry listing remain pending; no live API release is implied.
 
 ```sh
 linkcensus-mcp --version
@@ -148,11 +150,13 @@ envelopes, tool listing/calling and cancellation over OS pipes with a synthetic
 client response. Without the SDK those tests explicitly skip. No provider or
 external network is used by these tests.
 
-Remaining coordinator gates: copied-wheel clean install, installed entry-point
-smoke against actual REST fixtures, independent supported-client integrations,
-mandatory architecture/code review and separate hosted authorization. Public
-distribution/deployment require authorization and receipts. An in-process SDK
-fixture is not two independent clients or live acceptance.
+Remaining distribution gates: final-public-commit wheel/sdist validation and
+fresh clean installation, public-index publication/readback, independent
+supported end-user client sessions and live enrollment. The local installed
+entry-point/official-SDK fixture acceptance is separate from those gates.
+Required release review and deployment receipts still apply. Hosted authorization
+is separate functionality; an SDK session is not two end-user clients or proof
+that a hosted API is active.
 
 ## Attribution and data terms
 
