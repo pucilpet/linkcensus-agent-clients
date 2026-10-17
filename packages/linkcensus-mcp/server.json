@@ -1,0 +1,32 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.pucilpet/linkcensus-mcp",
+  "title": "LinkCensus",
+  "description": "Dated link-neighborhood candidates with edition provenance and a shared account allowance.",
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "registryBaseUrl": "https://pypi.org",
+      "identifier": "linkcensus-mcp",
+      "version": "0.1.0",
+      "runtimeHint": "uvx",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "LINKCENSUS_API_KEY",
+          "description": "Your own LinkCensus API key",
+          "isRequired": true,
+          "isSecret": true,
+          "format": "string"
+        }
+      ]
+    }
+  ],
+  "repository": {
+    "url": "https://github.com/pucilpet/linkcensus-agent-clients",
+    "source": "github"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "linkcensus": {
+      "command": "/absolute/path/to/linkcensus-mcp",
+      "args": [
+        "--config",
+        "/absolute/private/path/to/linkcensus/config.json"
+      ]
+    }
+  }
+}

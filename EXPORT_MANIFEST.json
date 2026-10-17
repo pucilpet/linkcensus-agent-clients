@@ -1,0 +1,187 @@
+{
+  "schema_version": 1,
+  "kind": "public_source_release_candidate",
+  "source_files_byte_identical": true,
+  "excluded": [
+    "repository_history",
+    "application_source",
+    "environment_files",
+    "runtime_data",
+    "operational_documents",
+    "build_output",
+    "installed_dependencies"
+  ],
+  "self_hash": "recorded separately in private review receipt",
+  "files": [
+    {
+      "path": ".gitignore",
+      "bytes": 80,
+      "sha256": "76449999c8045614db6a8a2b72601f0bc292529d2e106e896923bbaa748916c9"
+    },
+    {
+      "path": "EXPORT_ALLOWLIST.json",
+      "bytes": 1745,
+      "sha256": "f972c52c4a830d5e9c00528801cc096f6bd79e0ae3e43deb5b3b4524a5a98fdf"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 1128,
+      "sha256": "ee8d2097101588b96ab96bced9505cc40124ba647c223b01154843667af79c2c"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4693,
+      "sha256": "9711a491cc64c6c7215437be65a7248910d3d05922d81b2ed8ce93e600ecbbfe"
+    },
+    {
+      "path": "examples/mcp-client.template.json",
+      "bytes": 208,
+      "sha256": "d524d9033bd0db55166df068d00f952b73ee830917795bfada1d878763beb6ae"
+    },
+    {
+      "path": "packages/linkcensus-client/CHANGELOG.md",
+      "bytes": 349,
+      "sha256": "2c669898600b9cf3e517a845e9de12c03ace1b769eb0517f101bb21a847ed6bf"
+    },
+    {
+      "path": "packages/linkcensus-client/LICENSE",
+      "bytes": 1128,
+      "sha256": "ee8d2097101588b96ab96bced9505cc40124ba647c223b01154843667af79c2c"
+    },
+    {
+      "path": "packages/linkcensus-client/README.md",
+      "bytes": 6832,
+      "sha256": "76315c1d48ffd618524a37c9b63d9062e814026c4b7e786eb2547e203051e0e6"
+    },
+    {
+      "path": "packages/linkcensus-client/SECURITY.md",
+      "bytes": 843,
+      "sha256": "537a50d71d0b898cdcafb34569f622fd52bdaa8737537d13c07eb453602d23ba"
+    },
+    {
+      "path": "packages/linkcensus-client/pyproject.toml",
+      "bytes": 669,
+      "sha256": "d7dd69ede87613058793ae84f406f9e0bfbc51819c556418efde3ab49e4066fd"
+    },
+    {
+      "path": "packages/linkcensus-client/src/linkcensus_client/__init__.py",
+      "bytes": 182,
+      "sha256": "5118ac0cde3841947e0149ad975300cf6c83fb2a9c6a30cd25e31fd10d0a4d88"
+    },
+    {
+      "path": "packages/linkcensus-client/src/linkcensus_client/__main__.py",
+      "bytes": 48,
+      "sha256": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d"
+    },
+    {
+      "path": "packages/linkcensus-client/src/linkcensus_client/cli.py",
+      "bytes": 7175,
+      "sha256": "40c7d120ed4b45ce937b15be2b9a6edd11b1729e364839dba93aebb4bb207213"
+    },
+    {
+      "path": "packages/linkcensus-client/src/linkcensus_client/client.py",
+      "bytes": 13219,
+      "sha256": "c88d123aea2b45242b79ec1491b14c64f8f38e2d69d849cc4f498f4e3329122c"
+    },
+    {
+      "path": "packages/linkcensus-client/src/linkcensus_client/config.py",
+      "bytes": 2856,
+      "sha256": "785e6459b7d44a058a22b63200ce1b8f10598bbf4c6caa6e768cd62fe61d0f81"
+    },
+    {
+      "path": "packages/linkcensus-client/tests/test_client.py",
+      "bytes": 17275,
+      "sha256": "90aa5090711ea4d8826ae7ff3050eac17b37b267054eca3422db0d6e4170df82"
+    },
+    {
+      "path": "packages/linkcensus-client/tests/test_package.py",
+      "bytes": 829,
+      "sha256": "6e914b2a10637f716c568f953f94b325e050433a9beb3315ec739433efdcb319"
+    },
+    {
+      "path": "packages/linkcensus-mcp/CHANGELOG.md",
+      "bytes": 505,
+      "sha256": "e3e6eb5e1bc114ab7d72af578750d11cae43ea4cd55254cae7a5326487abc0a6"
+    },
+    {
+      "path": "packages/linkcensus-mcp/LICENSE",
+      "bytes": 1128,
+      "sha256": "ee8d2097101588b96ab96bced9505cc40124ba647c223b01154843667af79c2c"
+    },
+    {
+      "path": "packages/linkcensus-mcp/PROVENANCE.md",
+      "bytes": 967,
+      "sha256": "0cd16eb4ab0d55700da4e089fdbb8acdae60b77381aac36da39545a9b0324a78"
+    },
+    {
+      "path": "packages/linkcensus-mcp/README.md",
+      "bytes": 10489,
+      "sha256": "9d6a6487dfd788991e9aab6994f408dd915e7248c834bfbdaeec1b6f71af1190"
+    },
+    {
+      "path": "packages/linkcensus-mcp/SECURITY.md",
+      "bytes": 916,
+      "sha256": "0f4c06ad069ebd896bd8352a3a57165617dfa3c18cfe1b85b13e732c4256423d"
+    },
+    {
+      "path": "packages/linkcensus-mcp/pyproject.toml",
+      "bytes": 698,
+      "sha256": "689e6dbef3b0042a33bf01c0e627ef8a22ae4b1d2d289f01a82e4f147be758ca"
+    },
+    {
+      "path": "packages/linkcensus-mcp/server.json",
+      "bytes": 911,
+      "sha256": "6505addf2645869953db056fc4a9ef03d4d503ee0b572b4af909ba00f4997794"
+    },
+    {
+      "path": "packages/linkcensus-mcp/src/linkcensus_mcp/__init__.py",
+      "bytes": 94,
+      "sha256": "a28c251e0dfa04aeff49a9b51732b149078b93aec518af7ba97ac700b4d893cd"
+    },
+    {
+      "path": "packages/linkcensus-mcp/src/linkcensus_mcp/__main__.py",
+      "bytes": 48,
+      "sha256": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d"
+    },
+    {
+      "path": "packages/linkcensus-mcp/src/linkcensus_mcp/cli.py",
+      "bytes": 2170,
+      "sha256": "9701b8046bd1e8ca0d4d5147e44a388afd9e67216761e23a8507e1844847bd49"
+    },
+    {
+      "path": "packages/linkcensus-mcp/src/linkcensus_mcp/runner.py",
+      "bytes": 2050,
+      "sha256": "70d96fafaaf64274a54e3235ee15f9474e3e263dc617828acc6de1130e62cc1a"
+    },
+    {
+      "path": "packages/linkcensus-mcp/src/linkcensus_mcp/server.py",
+      "bytes": 3250,
+      "sha256": "e7b5c5e92991081c78e34a72059f1f8a5a8df63bbae065ee969829c882dc54d0"
+    },
+    {
+      "path": "packages/linkcensus-mcp/src/linkcensus_mcp/tools.py",
+      "bytes": 5283,
+      "sha256": "77932bedbb1e2615e7796d5ddc6030ba28e8b5349a524b57599acb4499644fa7"
+    },
+    {
+      "path": "packages/linkcensus-mcp/src/linkcensus_mcp/transport.py",
+      "bytes": 9521,
+      "sha256": "43dfc25b4ed5232390bfc0e058b5592aaf486ece362ae97387389862cbd14fc3"
+    },
+    {
+      "path": "packages/linkcensus-mcp/tests/test_bounds.py",
+      "bytes": 8751,
+      "sha256": "a493bfff88de0aed0ac27c94b5fc915b551e60dbe85f3a3bae4b56d2d8119fef"
+    },
+    {
+      "path": "packages/linkcensus-mcp/tests/test_sdk.py",
+      "bytes": 6835,
+      "sha256": "e8ad47932f96d31a16373a95cecb9c641693c95bbcb902f3a3c14dac4ef4c1f5"
+    },
+    {
+      "path": "packages/linkcensus-mcp/tests/test_tools.py",
+      "bytes": 6111,
+      "sha256": "0f29004473352a01c941134b9b8ba210e78e505ea0ad6e821cc5d7ed2a5d2782"
+    }
+  ]
+}
