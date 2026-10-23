@@ -1,0 +1,25 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.pucilpet/linkcensus-mcp",
+  "title": "LinkCensus",
+  "description": "Find related domains and shared backlinks with LinkCensus.",
+  "repository": {
+    "url": "https://github.com/pucilpet/linkcensus-agent-clients",
+    "source": "github"
+  },
+  "version": "0.7.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://linkcensus.com/mcp",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "Bearer followed by your personal LinkCensus API key from https://linkcensus.com/account",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}

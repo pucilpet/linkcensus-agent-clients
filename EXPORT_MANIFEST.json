@@ -25,8 +25,8 @@
     },
     {
       "path": "EXPORT_ALLOWLIST.json",
-      "bytes": 1876,
-      "sha256": "4cc781e7afd7f739fe8482e334009df51952a05841c59e80596c81ab54994029"
+      "bytes": 1926,
+      "sha256": "4a73957fc0209cf9b327b21724bd3b3ca6e1e2fffda0bc2ab9e9f9d3a56f538b"
     },
     {
       "path": "LICENSE",
@@ -130,8 +130,8 @@
     },
     {
       "path": "packages/linkcensus-mcp/README.md",
-      "bytes": 10916,
-      "sha256": "a90b00d061593ca0506df7f818a14e1689b3d55ae32254973a476f3ce712d10e"
+      "bytes": 11530,
+      "sha256": "a6d9a2dcddf97571862713d0546a0c1238d5c011bf2042d3861cab85d63a9809"
     },
     {
       "path": "packages/linkcensus-mcp/SECURITY.md",
@@ -142,6 +142,11 @@
       "path": "packages/linkcensus-mcp/pyproject.toml",
       "bytes": 698,
       "sha256": "689e6dbef3b0042a33bf01c0e627ef8a22ae4b1d2d289f01a82e4f147be758ca"
+    },
+    {
+      "path": "packages/linkcensus-mcp/server.hosted.json",
+      "bytes": 745,
+      "sha256": "548544989b45c3807077893920406e0e5b4292016d198cb4e4417626619fb7ef"
     },
     {
       "path": "packages/linkcensus-mcp/server.json",

@@ -1,6 +1,31 @@
 <!-- mcp-name: io.github.pucilpet/linkcensus-mcp -->
 
-# LinkCensus MCP stdio gateway 0.1.0
+# LinkCensus MCP
+
+Find related domains and shared backlinks with LinkCensus.
+
+## Hosted quickstart
+
+1. Sign in at [linkcensus.com/account](https://linkcensus.com/account) and create
+   your personal API key.
+2. Add `https://linkcensus.com/mcp` to your MCP client using **Streamable HTTP**.
+3. Set the private `Authorization` header to `Bearer YOUR_LINKCENSUS_API_KEY`,
+   replacing the placeholder with your own key. Keep the key in your client's
+   private settings.
+
+The free account includes **5 neighborhood lookups per UTC calendar month**,
+with **up to 5 rows per lookup**. REST, CLI and MCP calls share the same account
+allowance across all keys. Edition and domain-resolution metadata reads do not
+use neighborhood lookups.
+
+Start with `list_editions`, resolve your domain with `resolve_domain`, then call
+`get_neighbor_candidates`. Each result includes the graph edition and domains that link to both sites.
+
+See the [MCP setup guide](https://linkcensus.com/docs/mcp) and
+[API documentation](https://linkcensus.com/docs/api). Hosted access uses a personal bearer key. Use a client that supports a custom
+Authorization header.
+
+## Local stdio gateway 0.1.0
 
 Separate local gateway over `linkcensus-client==0.1.0`, using the official Python
 SDK `mcp==2.3.0`. Python >=3.10, POSIX pipes on Linux/macOS, and asyncio are
@@ -9,19 +34,18 @@ separate environment; do not upgrade LinkCensus backend dependencies to install
 this gateway. See [PROVENANCE.md](https://github.com/pucilpet/linkcensus-agent-clients/blob/631d764cc9e2bf8ec3d862938847d4ae7f357797/packages/linkcensus-mcp/PROVENANCE.md) for the MIT-licensed VP transport
 and runner adaptation and retained copyright attribution.
 
-This is a local stdio implementation. Hosted Streamable HTTP, interactive
-OAuth/OIDC, protected-resource metadata, registry listing, public package
-publication and deployment are separate work. A REST key is not proof of
-interactive remote MCP authorization.
+The local stdio gateway is an alternative to the hosted endpoint above. Its
+package release and installation status are tracked separately from hosted
+availability.
 
 ## Installation and credentials
 
 Development wheels were built and installed outside the checkout in a separate
 reviewed SDK environment. An installed CLI and official-SDK subprocess session
 then exercised synthetic REST fixtures, shared quota and revocation. That local
-acceptance predates the final public distribution metadata. Final-commit
-wheel/sdist validation, fresh artifact/public-index installation, package
-publication and Registry listing remain pending; no live API release is implied.
+acceptance predates the final public distribution metadata. PyPI publication
+and public-index installation remain pending. The commands below apply to a
+separately installed local gateway, not a package currently available from PyPI.
 
 ```sh
 linkcensus-mcp --version
@@ -152,11 +176,10 @@ external network is used by these tests.
 
 Remaining distribution gates: final-public-commit wheel/sdist validation and
 fresh clean installation, public-index publication/readback, independent
-supported end-user client sessions and live enrollment. The local installed
+supported end-user client sessions. The local installed
 entry-point/official-SDK fixture acceptance is separate from those gates.
-Required release review and deployment receipts still apply. Hosted authorization
-is separate functionality; an SDK session is not two end-user clients or proof
-that a hosted API is active.
+An official SDK fixture is separate from acceptance in two supported end-user
+clients. Hosted setup is documented in the quickstart above.
 
 ## Attribution and data terms
 
@@ -169,23 +192,20 @@ data-terms notes before any redistribution.
 
 ## Distribution candidate
 
-`server.json` describes the intended public PyPI package and local stdio
-transport under the candidate name `io.github.pucilpet/linkcensus-mcp`. The
-GitHub account identity was checked during release preparation; official MCP
-Registry namespace authentication, package ownership verification and publication
-have not happened. The README marker is preparation for PyPI ownership
-verification, not a listing receipt.
+`server.json` retains the PyPI/stdio distribution candidate under
+`io.github.pucilpet/linkcensus-mcp`. Public PyPI package publication remains
+pending; the README marker supports future package ownership verification.
 
-The package Homepage and Documentation metadata name intended release
-destinations. They do not establish that the new docs/API routes are live.
-Client source and issues are available at [linkcensus-agent-clients](https://github.com/pucilpet/linkcensus-agent-clients). This repository contains the client packages, licenses, examples and
-release metadata. Version 0.1.0 remains a release candidate; public package and
-Registry availability are still pending.
+The hosted endpoint is listed in the [official MCP Registry](https://registry.modelcontextprotocol.io/v0/servers/io.github.pucilpet%2Flinkcensus-mcp/versions/0.7.0).
+`server.hosted.json` contains the published manifest.
 
-After final artifact review and public package publication, use a reviewed
-`mcp-publisher` binary to validate this manifest, authenticate the matching
-namespace and publish. Keep GitHub, PyPI and Registry receipts separate. Local
-wheel installation and the official SDK fixture test are already recorded in
-the application release report; two end-user client sessions and live enrollment
-are separate remaining acceptance steps. Linux/Python 3.12 is the tested runtime;
-other source-supported Python/POSIX combinations need their own acceptance.
+Client source and issues are available at
+[linkcensus-agent-clients](https://github.com/pucilpet/linkcensus-agent-clients).
+The repository contains client packages, licenses, examples and release
+metadata. The local gateway package version is 0.1.0; the hosted manifest's
+0.7.0 version follows the service release line.
+
+For a local package release, retain final artifact review, public-index
+publication and fresh installation receipts. For a Registry release, validate
+the selected manifest, authenticate its namespace and retain the publication
+response and public readback. Keep GitHub, PyPI and Registry receipts separate.

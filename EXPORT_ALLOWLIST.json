@@ -28,6 +28,7 @@
     "packages/linkcensus-mcp/README.md",
     "packages/linkcensus-mcp/SECURITY.md",
     "packages/linkcensus-mcp/pyproject.toml",
+    "packages/linkcensus-mcp/server.hosted.json",
     "packages/linkcensus-mcp/server.json",
     "packages/linkcensus-mcp/src/linkcensus_mcp/__init__.py",
     "packages/linkcensus-mcp/src/linkcensus_mcp/__main__.py",
