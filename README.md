@@ -1,10 +1,19 @@
-# LinkCensus agent clients - release candidate
+# LinkCensus agent clients
 
 Release-candidate source for the LinkCensus REST client/CLI and local
 stdio MCP gateway. This export contains only the two client packages, their
 source, tests, notices, license and release metadata. It contains no application
 server, graph, customer state, deployment configuration or repository history.
-The public source repository is [linkcensus-agent-clients](https://github.com/pucilpet/linkcensus-agent-clients). Package-index releases, Registry listing and live API enrollment are still pending.
+The public source repository is [linkcensus-agent-clients](https://github.com/pucilpet/linkcensus-agent-clients).
+The hosted MCP endpoint is live at `https://linkcensus.com/mcp` using Streamable
+HTTP. Sign in at [your account](https://linkcensus.com/account) and configure your
+personal key in a private `Authorization: Bearer YOUR_LINKCENSUS_API_KEY` header.
+Use a client that supports a custom Authorization header. See the
+[MCP setup guide](https://linkcensus.com/docs/mcp) and
+[API documentation](https://linkcensus.com/docs/api).
+
+Public PyPI package releases remain pending; the local package versions below
+are separate from hosted availability.
 
 ## Packages
 
@@ -13,18 +22,19 @@ The public source repository is [linkcensus-agent-clients](https://github.com/pu
 | [linkcensus-client](packages/linkcensus-client/README.md) | 0.1.0 | Standard-library REST client and `linkcensus` CLI |
 | [linkcensus-mcp](packages/linkcensus-mcp/README.md) | 0.1.0 | Three read-only stdio tools over the same REST client |
 
-The API must be enabled and your own key issued before live use. Free access is
-15 admitted neighborhood attempts per account per UTC calendar month, at most
-five candidate rows. REST, CLI and MCP share that counter; rotation does not
+Free access includes 5 neighborhood lookups per account per UTC calendar month,
+with up to 5 candidate rows per lookup. REST, CLI and MCP share that counter; rotation does not
 reset it. Editions and domain resolution do not spend monthly neighborhood
 attempts but still require authentication and execution admission. Candidates
 are not independently confirmed competitors; retain edition, provenance,
 truncation and quota notes. The website ledger and VerifiedPricing budgets are
 separate. No request triggers a crawl or retries automatically.
 
-This is local stdio over HTTPS REST, not a hosted MCP/OAuth service. Linux/Python
-3.12 is tested; other source-supported Python 3.10+/POSIX combinations need
-acceptance, and Windows is unsupported. See each package's transport limits.
+The hosted service uses personal bearer keys. The local stdio gateway uses
+HTTPS REST and remains available as a separate source package. Linux/Python
+3.12 is tested for local stdio; other source-supported Python 3.10+/POSIX
+combinations need acceptance, and Windows is unsupported. See each package's
+transport limits.
 
 ## Candidate installation
 
@@ -65,10 +75,10 @@ acceptance are separate operations, not test side effects.
 
 ## Distribution and security
 
-The Registry manifest is a schema-validated candidate under
-`io.github.pucilpet/linkcensus-mcp`. Namespace authentication, PyPI ownership,
-publication and Registry readback remain separate gates. Source and issue links point to this public repository; they do not establish
-package-index or API availability.
+The hosted endpoint is listed in the [official MCP Registry](https://registry.modelcontextprotocol.io/v0/servers/io.github.pucilpet%2Flinkcensus-mcp/versions/0.7.0).
+[server.hosted.json](packages/linkcensus-mcp/server.hosted.json) contains the
+published manifest. The separate PyPI/stdio manifest remains a distribution
+candidate; public package-index publication and installation are pending.
 
 Do not post credentials or private responses. Use [private GitHub vulnerability reporting](https://github.com/pucilpet/linkcensus-agent-clients/security/advisories/new) for security issues. This feature is enabled; no response-time commitment is promised. See the [client policy](packages/linkcensus-client/SECURITY.md)
 and [gateway policy](packages/linkcensus-mcp/SECURITY.md).

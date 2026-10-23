@@ -35,8 +35,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 4693,
-      "sha256": "9711a491cc64c6c7215437be65a7248910d3d05922d81b2ed8ce93e600ecbbfe"
+      "bytes": 5239,
+      "sha256": "fd7ee55f7d7610c52e910672127c0349fb8ed21166657cfebe602024a3bb071c"
     },
     {
       "path": "examples/mcp-client.template.json",
