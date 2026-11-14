@@ -60,8 +60,8 @@
     },
     {
       "path": "packages/linkcensus-client/README.md",
-      "bytes": 7089,
-      "sha256": "d59c6dd2353eeb568d8b13c9bc2a274e0290556b1f74eaec8817677d6d7404ff"
+      "bytes": 7088,
+      "sha256": "8bb9149050054214ddc20b12ff6b2644a1c369b3fed664c2f559857709707259"
     },
     {
       "path": "packages/linkcensus-client/SECURITY.md",

@@ -90,7 +90,7 @@ are sanitized. Human strings escape terminal controls.
 | 5 | Missing endpoint/domain resource (404) or unavailable edition pin (409) |
 | 6 | Transport/timeout, redirect, invalid/oversized response or other server failure |
 
-LC currently defines 15 free and 1000 paid monthly account attempts, shared
+LC currently defines 5 free and 1000 paid monthly account attempts, shared
 across keys. The server's returned quota is authoritative; rotation does not
 reset it. These are distinct from VerifiedPricing's proposed weighted budgets.
 The API is default-off and requires both server switches. This source package
